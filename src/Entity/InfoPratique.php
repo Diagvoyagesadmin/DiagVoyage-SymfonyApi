@@ -26,6 +26,10 @@ class InfoPratique
     #[ORM\Column]
     private ?\DateTimeImmutable $releaseAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'infosPratique')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Pays $pays = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -63,6 +67,18 @@ class InfoPratique
     public function setReleaseAt(\DateTimeImmutable $releaseAt): self
     {
         $this->releaseAt = $releaseAt;
+
+        return $this;
+    }
+
+    public function getPays(): ?Pays
+    {
+        return $this->pays;
+    }
+
+    public function setPays(?Pays $pays): self
+    {
+        $this->pays = $pays;
 
         return $this;
     }

@@ -41,6 +41,10 @@ class AdresseUtil
     #[ORM\Column]
     private ?float $lon = null;
 
+    #[ORM\ManyToOne(inversedBy: 'adressesUtil')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Pays $pays = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -138,6 +142,18 @@ class AdresseUtil
     public function setLon(float $lon): self
     {
         $this->lon = $lon;
+
+        return $this;
+    }
+
+    public function getPays(): ?Pays
+    {
+        return $this->pays;
+    }
+
+    public function setPays(?Pays $pays): self
+    {
+        $this->pays = $pays;
 
         return $this;
     }
