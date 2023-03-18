@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\VaccinRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -28,6 +30,18 @@ class Vaccin
 
     #[ORM\Column]
     private ?\DateTimeImmutable $releaseAt = null;
+
+    #[ORM\ManyToMany(targetEntity: Pays::class, mappedBy: 'vaccins')]
+    private Collection $pays;
+
+    #[ORM\ManyToMany(targetEntity: Centre::class, inversedBy: 'vaccins')]
+    private Collection $centres;
+
+    public function __construct()
+    {
+        $this->pays = new ArrayCollection();
+        $this->centres = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -78,6 +92,57 @@ class Vaccin
     public function setReleaseAt(\DateTimeImmutable $releaseAt): self
     {
         $this->releaseAt = $releaseAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pays>
+     */
+    public function getPays(): Collection
+    {
+        return $this->pays;
+    }
+
+    public function addPay(Pays $pay): self
+    {
+        if (!$this->pays->contains($pay)) {
+            $this->pays->add($pay);
+            $pay->addVaccin($this);
+        }
+
+        return $this;
+    }
+
+    public function removePay(Pays $pay): self
+    {
+        if ($this->pays->removeElement($pay)) {
+            $pay->removeVaccin($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Centre>
+     */
+    public function getCentres(): Collection
+    {
+        return $this->centres;
+    }
+
+    public function addCentre(Centre $centre): self
+    {
+        if (!$this->centres->contains($centre)) {
+            $this->centres->add($centre);
+        }
+
+        return $this;
+    }
+
+    public function removeCentre(Centre $centre): self
+    {
+        $this->centres->removeElement($centre);
 
         return $this;
     }

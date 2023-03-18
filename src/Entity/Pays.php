@@ -35,10 +35,26 @@ class Pays
     #[ORM\OneToMany(mappedBy: 'pays', targetEntity: InfoPratique::class, orphanRemoval: true)]
     private Collection $infosPratique;
 
+    #[ORM\ManyToMany(targetEntity: User::class, mappedBy: 'pays')]
+    private Collection $users;
+
+    #[ORM\ManyToMany(targetEntity: AchatConseille::class, inversedBy: 'pays')]
+    private Collection $achatsConseille;
+
+    #[ORM\ManyToMany(targetEntity: Maladie::class, inversedBy: 'pays')]
+    private Collection $maladies;
+
+    #[ORM\ManyToMany(targetEntity: Vaccin::class, inversedBy: 'pays')]
+    private Collection $vaccins;
+
     public function __construct()
     {
         $this->adressesUtil = new ArrayCollection();
         $this->infosPratique = new ArrayCollection();
+        $this->users = new ArrayCollection();
+        $this->achatsConseille = new ArrayCollection();
+        $this->maladies = new ArrayCollection();
+        $this->vaccins = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -114,6 +130,105 @@ class Pays
                 $infosPratique->setPays(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, User>
+     */
+    public function getUsers(): Collection
+    {
+        return $this->users;
+    }
+
+    public function addUser(User $user): self
+    {
+        if (!$this->users->contains($user)) {
+            $this->users->add($user);
+            $user->addPay($this);
+        }
+
+        return $this;
+    }
+
+    public function removeUser(User $user): self
+    {
+        if ($this->users->removeElement($user)) {
+            $user->removePay($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, AchatConseille>
+     */
+    public function getAchatsConseille(): Collection
+    {
+        return $this->achatsConseille;
+    }
+
+    public function addAchatsConseille(AchatConseille $achatsConseille): self
+    {
+        if (!$this->achatsConseille->contains($achatsConseille)) {
+            $this->achatsConseille->add($achatsConseille);
+        }
+
+        return $this;
+    }
+
+    public function removeAchatsConseille(AchatConseille $achatsConseille): self
+    {
+        $this->achatsConseille->removeElement($achatsConseille);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Maladie>
+     */
+    public function getMaladies(): Collection
+    {
+        return $this->maladies;
+    }
+
+    public function addMalady(Maladie $malady): self
+    {
+        if (!$this->maladies->contains($malady)) {
+            $this->maladies->add($malady);
+        }
+
+        return $this;
+    }
+
+    public function removeMalady(Maladie $malady): self
+    {
+        $this->maladies->removeElement($malady);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vaccin>
+     */
+    public function getVaccins(): Collection
+    {
+        return $this->vaccins;
+    }
+
+    public function addVaccin(Vaccin $vaccin): self
+    {
+        if (!$this->vaccins->contains($vaccin)) {
+            $this->vaccins->add($vaccin);
+        }
+
+        return $this;
+    }
+
+    public function removeVaccin(Vaccin $vaccin): self
+    {
+        $this->vaccins->removeElement($vaccin);
 
         return $this;
     }

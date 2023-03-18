@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\MaladieRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -25,6 +27,22 @@ class Maladie
 
     #[ORM\Column(length: 255)]
     private ?string $mode_contamination = null;
+
+    #[ORM\ManyToMany(targetEntity: Pays::class, mappedBy: 'maladies')]
+    private Collection $pays;
+
+    #[ORM\ManyToMany(targetEntity: Symptome::class, inversedBy: 'maladies')]
+    private Collection $symptomes;
+
+    #[ORM\ManyToMany(targetEntity: Centre::class, inversedBy: 'maladies')]
+    private Collection $centres;
+
+    public function __construct()
+    {
+        $this->pays = new ArrayCollection();
+        $this->symptomes = new ArrayCollection();
+        $this->centres = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -63,6 +81,81 @@ class Maladie
     public function setModeContamination(string $mode_contamination): self
     {
         $this->mode_contamination = $mode_contamination;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pays>
+     */
+    public function getPays(): Collection
+    {
+        return $this->pays;
+    }
+
+    public function addPay(Pays $pay): self
+    {
+        if (!$this->pays->contains($pay)) {
+            $this->pays->add($pay);
+            $pay->addMalady($this);
+        }
+
+        return $this;
+    }
+
+    public function removePay(Pays $pay): self
+    {
+        if ($this->pays->removeElement($pay)) {
+            $pay->removeMalady($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Symptome>
+     */
+    public function getSymptomes(): Collection
+    {
+        return $this->symptomes;
+    }
+
+    public function addSymptome(Symptome $symptome): self
+    {
+        if (!$this->symptomes->contains($symptome)) {
+            $this->symptomes->add($symptome);
+        }
+
+        return $this;
+    }
+
+    public function removeSymptome(Symptome $symptome): self
+    {
+        $this->symptomes->removeElement($symptome);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Centre>
+     */
+    public function getCentres(): Collection
+    {
+        return $this->centres;
+    }
+
+    public function addCentre(Centre $centre): self
+    {
+        if (!$this->centres->contains($centre)) {
+            $this->centres->add($centre);
+        }
+
+        return $this;
+    }
+
+    public function removeCentre(Centre $centre): self
+    {
+        $this->centres->removeElement($centre);
 
         return $this;
     }

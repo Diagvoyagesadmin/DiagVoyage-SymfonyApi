@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -30,6 +32,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column]
     private ?\DateTimeImmutable $dateDeNaissance = null;
+
+    #[ORM\ManyToMany(targetEntity: Pays::class, inversedBy: 'users')]
+    private Collection $pays;
+
+    public function __construct()
+    {
+        $this->pays = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -109,6 +119,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setDateDeNaissance(\DateTimeImmutable $dateDeNaissance): self
     {
         $this->dateDeNaissance = $dateDeNaissance;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Pays>
+     */
+    public function getPays(): Collection
+    {
+        return $this->pays;
+    }
+
+    public function addPay(Pays $pay): self
+    {
+        if (!$this->pays->contains($pay)) {
+            $this->pays->add($pay);
+        }
+
+        return $this;
+    }
+
+    public function removePay(Pays $pay): self
+    {
+        $this->pays->removeElement($pay);
 
         return $this;
     }
