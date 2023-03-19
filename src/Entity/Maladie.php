@@ -3,7 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\MaladieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,35 +13,29 @@ use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MaladieRepository::class)]
 #[ORM\Table(name: '`maladies`')]
-#[ApiResource]
-/*
-(
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
-)
-*/
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection()
+    ]
+)]
 class Maladie
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    //#[Groups('read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255, unique: true)]
-  //  #[Groups(['read', 'write'])]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-   // #[Groups(['read', 'write'])]
     private ?string $description = null;
 
     #[ORM\Column(length: 255)]
-    //#[Groups(['read', 'write'])]
     private ?string $mode_contamination = null;
 
     #[ORM\ManyToMany(targetEntity: Pays::class, mappedBy: 'maladies')]
-    //#[Groups(['read', 'write'])]
     private Collection $pays;
 
     #[ORM\ManyToMany(targetEntity: Symptome::class, inversedBy: 'maladies')]
