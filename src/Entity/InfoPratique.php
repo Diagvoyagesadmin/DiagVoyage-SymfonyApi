@@ -30,6 +30,9 @@ class InfoPratique
     #[ORM\JoinColumn(nullable: false)]
     private ?Pays $pays = null;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stateOfVoyage = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -79,6 +82,18 @@ class InfoPratique
     public function setPays(?Pays $pays): self
     {
         $this->pays = $pays;
+
+        return $this;
+    }
+
+    public function getStateOfVoyage(): ?string
+    {
+        return $this->stateOfVoyage;
+    }
+
+    public function setStateOfVoyage(string $stateOfVoyage): self
+    {
+        $this->stateOfVoyage = $stateOfVoyage;
 
         return $this;
     }
