@@ -37,6 +37,10 @@ class Vaccin
     #[ORM\ManyToMany(targetEntity: Centre::class, inversedBy: 'vaccins')]
     private Collection $centres;
 
+    public function __toString(){
+        return $this->nom;
+    }
+
     public function __construct()
     {
         $this->pays = new ArrayCollection();

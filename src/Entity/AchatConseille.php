@@ -28,6 +28,10 @@ class AchatConseille
     #[ORM\ManyToMany(targetEntity: Pays::class, mappedBy: 'achatsConseille')]
     private Collection $pays;
 
+    public function __toString(){
+        return $this->prixMoyen;
+    }
+
     public function __construct()
     {
         $this->pays = new ArrayCollection();

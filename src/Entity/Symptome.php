@@ -28,6 +28,10 @@ class Symptome
     #[ORM\ManyToMany(targetEntity: Maladie::class, mappedBy: 'symptomes')]
     private Collection $maladies;
 
+    public function __toString(){
+        return $this->nom;
+    }
+
     public function __construct()
     {
         $this->maladies = new ArrayCollection();

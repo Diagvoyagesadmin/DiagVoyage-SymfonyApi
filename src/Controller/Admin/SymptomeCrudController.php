@@ -3,6 +3,9 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Symptome;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextEditorField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
 use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
 
 class SymptomeCrudController extends AbstractCrudController
@@ -12,14 +15,14 @@ class SymptomeCrudController extends AbstractCrudController
         return Symptome::class;
     }
 
-    /*
+    
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
-            TextField::new('title'),
+            TextField::new('nom'),
             TextEditorField::new('description'),
+            AssociationField::new('maladies'),
         ];
     }
-    */
+    
 }

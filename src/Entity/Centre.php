@@ -45,6 +45,10 @@ class Centre
     #[ORM\ManyToMany(targetEntity: Vaccin::class, mappedBy: 'centres')]
     private Collection $vaccins;
 
+    public function __toString(){
+        return $this->nom." ".$this->ville;
+    }
+
     public function __construct()
     {
         $this->maladies = new ArrayCollection();

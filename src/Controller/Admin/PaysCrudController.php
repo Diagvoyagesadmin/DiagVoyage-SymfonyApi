@@ -19,9 +19,10 @@ class PaysCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         return [
-            IdField::new('id'),
             TextField::new('nom'),
             AssociationField::new('adressesUtil'),
+            AssociationField::new('infosPratique'),
+            AssociationField::new('achatsConseille'),
         ];
     }
     

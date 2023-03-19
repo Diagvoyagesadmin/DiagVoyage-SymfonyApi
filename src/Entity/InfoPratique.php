@@ -33,6 +33,10 @@ class InfoPratique
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $stateOfVoyage = null;
 
+    public function __toString(){
+        return $this->nom;
+    }
+
     public function getId(): ?int
     {
         return $this->id;

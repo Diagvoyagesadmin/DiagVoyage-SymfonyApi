@@ -45,6 +45,10 @@ class AdresseUtil
     #[ORM\JoinColumn(nullable: false)]
     private ?Pays $pays = null;
 
+    public function __toString(){
+        return $this->nom." ".$this->type." ".$this->ville;
+    }
+
     public function getId(): ?int
     {
         return $this->id;
