@@ -3,7 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
 use App\Repository\PaysRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -12,26 +13,24 @@ use Doctrine\ORM\Mapping as ORM;
 #[ORM\Entity(repositoryClass: PaysRepository::class)]
 #[ORM\Table(name: '`pays`')]
 #[ApiResource(
-    normalizationContext: ['groups' => ['read']],
-    denormalizationContext: ['groups' => ['write']],
+    operations: [
+    new Get(),
+    new GetCollection()
+    ]
 )]
 class Pays
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-    #[Groups('read')]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    #[Groups(['read', 'write'])]
     private ?string $nom = null;
 
     #[ORM\OneToMany(mappedBy: 'pays', targetEntity: AdresseUtil::class, orphanRemoval: true)]
-    #[Groups('read')]
     private Collection $adressesUtil;
 
-    #[Groups('read')]
     #[ORM\OneToMany(mappedBy: 'pays', targetEntity: InfoPratique::class, orphanRemoval: true)]
     private Collection $infosPratique;
 
