@@ -26,6 +26,13 @@ class InfoPratique
     #[ORM\Column]
     private ?\DateTimeImmutable $releaseAt = null;
 
+    #[ORM\ManyToOne(inversedBy: 'infosPratique')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Pays $pays = null;
+
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $stateOfVoyage = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -63,6 +70,30 @@ class InfoPratique
     public function setReleaseAt(\DateTimeImmutable $releaseAt): self
     {
         $this->releaseAt = $releaseAt;
+
+        return $this;
+    }
+
+    public function getPays(): ?Pays
+    {
+        return $this->pays;
+    }
+
+    public function setPays(?Pays $pays): self
+    {
+        $this->pays = $pays;
+
+        return $this;
+    }
+
+    public function getStateOfVoyage(): ?string
+    {
+        return $this->stateOfVoyage;
+    }
+
+    public function setStateOfVoyage(string $stateOfVoyage): self
+    {
+        $this->stateOfVoyage = $stateOfVoyage;
 
         return $this;
     }

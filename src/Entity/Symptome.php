@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\SymptomeRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -22,6 +24,14 @@ class Symptome
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
+
+    #[ORM\ManyToMany(targetEntity: Maladie::class, mappedBy: 'symptomes')]
+    private Collection $maladies;
+
+    public function __construct()
+    {
+        $this->maladies = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -48,6 +58,33 @@ class Symptome
     public function setDescription(string $description): self
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Maladie>
+     */
+    public function getMaladies(): Collection
+    {
+        return $this->maladies;
+    }
+
+    public function addMalady(Maladie $malady): self
+    {
+        if (!$this->maladies->contains($malady)) {
+            $this->maladies->add($malady);
+            $malady->addSymptome($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMalady(Maladie $malady): self
+    {
+        if ($this->maladies->removeElement($malady)) {
+            $malady->removeSymptome($this);
+        }
 
         return $this;
     }

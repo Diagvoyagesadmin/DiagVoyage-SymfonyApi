@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
 use App\Repository\CentreRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: CentreRepository::class)]
@@ -36,6 +38,18 @@ class Centre
 
     #[ORM\Column(length: 255)]
     private ?string $type = null;
+
+    #[ORM\ManyToMany(targetEntity: Maladie::class, mappedBy: 'centres')]
+    private Collection $maladies;
+
+    #[ORM\ManyToMany(targetEntity: Vaccin::class, mappedBy: 'centres')]
+    private Collection $vaccins;
+
+    public function __construct()
+    {
+        $this->maladies = new ArrayCollection();
+        $this->vaccins = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -122,6 +136,60 @@ class Centre
     public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Maladie>
+     */
+    public function getMaladies(): Collection
+    {
+        return $this->maladies;
+    }
+
+    public function addMalady(Maladie $malady): self
+    {
+        if (!$this->maladies->contains($malady)) {
+            $this->maladies->add($malady);
+            $malady->addCentre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMalady(Maladie $malady): self
+    {
+        if ($this->maladies->removeElement($malady)) {
+            $malady->removeCentre($this);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Vaccin>
+     */
+    public function getVaccins(): Collection
+    {
+        return $this->vaccins;
+    }
+
+    public function addVaccin(Vaccin $vaccin): self
+    {
+        if (!$this->vaccins->contains($vaccin)) {
+            $this->vaccins->add($vaccin);
+            $vaccin->addCentre($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVaccin(Vaccin $vaccin): self
+    {
+        if ($this->vaccins->removeElement($vaccin)) {
+            $vaccin->removeCentre($this);
+        }
 
         return $this;
     }

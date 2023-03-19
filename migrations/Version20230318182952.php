@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20230318180346 extends AbstractMigration
+final class Version20230318182952 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -30,9 +30,11 @@ final class Version20230318180346 extends AbstractMigration
         $this->addSql('CREATE SEQUENCE "users_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE "vaccins_id_seq" INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE TABLE "achatsConseille" (id INT NOT NULL, prix_moyen NUMERIC(5, 2) NOT NULL, url TEXT NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE "adressesUtil" (id INT NOT NULL, nom VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, type VARCHAR(255) NOT NULL, adresse VARCHAR(255) NOT NULL, ville VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, lat DOUBLE PRECISION NOT NULL, lon DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "adressesUtil" (id INT NOT NULL, pays_id INT NOT NULL, nom VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, type VARCHAR(255) NOT NULL, adresse VARCHAR(255) NOT NULL, ville VARCHAR(255) NOT NULL, tel VARCHAR(255) NOT NULL, lat DOUBLE PRECISION NOT NULL, lon DOUBLE PRECISION NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_8A63084EA6E44244 ON "adressesUtil" (pays_id)');
         $this->addSql('CREATE TABLE "centres" (id INT NOT NULL, nom VARCHAR(255) NOT NULL, adresse VARCHAR(255) NOT NULL, ville VARCHAR(255) NOT NULL, code_postal VARCHAR(255) NOT NULL, lat DOUBLE PRECISION NOT NULL, lon DOUBLE PRECISION NOT NULL, type VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
-        $this->addSql('CREATE TABLE "infosPratique" (id INT NOT NULL, nom VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, release_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE TABLE "infosPratique" (id INT NOT NULL, pays_id INT NOT NULL, nom VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, release_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE INDEX IDX_8B74DF0AA6E44244 ON "infosPratique" (pays_id)');
         $this->addSql('COMMENT ON COLUMN "infosPratique".release_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE "maladies" (id INT NOT NULL, nom VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, mode_contamination VARCHAR(255) NOT NULL, PRIMARY KEY(id))');
         $this->addSql('CREATE UNIQUE INDEX UNIQ_FAAD93116C6E55B5 ON "maladies" (nom)');
@@ -43,6 +45,8 @@ final class Version20230318180346 extends AbstractMigration
         $this->addSql('COMMENT ON COLUMN "users".date_de_naissance IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('CREATE TABLE "vaccins" (id INT NOT NULL, nom VARCHAR(255) NOT NULL, description TEXT DEFAULT NULL, prix NUMERIC(6, 2) NOT NULL, release_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
         $this->addSql('COMMENT ON COLUMN "vaccins".release_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('ALTER TABLE "adressesUtil" ADD CONSTRAINT FK_8A63084EA6E44244 FOREIGN KEY (pays_id) REFERENCES "pays" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
+        $this->addSql('ALTER TABLE "infosPratique" ADD CONSTRAINT FK_8B74DF0AA6E44244 FOREIGN KEY (pays_id) REFERENCES "pays" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
     }
 
     public function down(Schema $schema): void
@@ -58,6 +62,8 @@ final class Version20230318180346 extends AbstractMigration
         $this->addSql('DROP SEQUENCE "symptomes_id_seq" CASCADE');
         $this->addSql('DROP SEQUENCE "users_id_seq" CASCADE');
         $this->addSql('DROP SEQUENCE "vaccins_id_seq" CASCADE');
+        $this->addSql('ALTER TABLE "adressesUtil" DROP CONSTRAINT FK_8A63084EA6E44244');
+        $this->addSql('ALTER TABLE "infosPratique" DROP CONSTRAINT FK_8B74DF0AA6E44244');
         $this->addSql('DROP TABLE "achatsConseille"');
         $this->addSql('DROP TABLE "adressesUtil"');
         $this->addSql('DROP TABLE "centres"');
